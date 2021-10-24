@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:santiago_murillo_8_2021_2_p1/models/countrie.dart';
 import 'package:santiago_murillo_8_2021_2_p1/screen/detail.dart';
@@ -11,10 +12,7 @@ class MyApp2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Counries",
-      home: Inicio()
-    );
+    return MaterialApp(title: "Counries", home: Inicio());
   }
 }
 
@@ -26,8 +24,10 @@ class Inicio extends StatefulWidget {
 }
 
 class _InicioState extends State<Inicio> {
-    ApiHelter _api = new ApiHelter();
+  ApiHelter _api = new ApiHelter();
   late Future<List<Countrie>> _countries;
+    bool _haveInternet = true;
+  Widget _body = Text("Revise su conexión a internet");
 
   @override
   void initState() {
@@ -38,48 +38,83 @@ class _InicioState extends State<Inicio> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Countries'),
-        ),
-        body: FutureBuilder(
-          future: _countries,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              print(snapshot.data);
-              return GridView.count(
-                crossAxisCount: 2,
-                children: _listCountries(snapshot.data),
-              );
-            } else if (snapshot.hasError) {
-              print(snapshot.error);
-              return Text("Error");
-            }
-            return Center(
-              child: CircularProgressIndicator(),
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(96, 151, 50, 25),
+        title: Text('Countries'),
+      ),
+      body: FutureBuilder(
+        future: _countries,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            print(snapshot.data);
+            return GridView.count(
+              crossAxisCount: 2,
+              children: _listCountries(snapshot.data),
             );
-          },
-        ),
+          } else if (snapshot.hasError) {
+            print(snapshot.error);
+            return Text("Error");
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
     );
   }
 
-    List<Widget> _listCountries(data) {
+  List<Widget> _listCountries(data) {
     List<Widget> countries = [];
     for (var item in data) {
-      countries.add(InkWell(  child: Card(
-          child: Column(
-        children: [          
-          Expanded(child: SvgPicture.network(item.flag)),      
-             
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(item.name),
-          )
-        ],
-      ),color: Color.fromRGBO(237, 237, 237,25),), onTap: () => Navigator.push(
-        context, 
-        MaterialPageRoute(builder: ( context ) => DetailCountie())
-        )));
+      countries.add(InkWell(
+          child: Card(
+            child: Column(
+              children: [
+               // Expanded(child: SvgPicture.network(item.flag)),
+                Expanded(child: Image.network(item.flags.png)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(item.name),
+                )
+              ],
+            ),
+            color: Color.fromRGBO(237, 237, 237, 25),
+          ),
+          onTap: () => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => DetailCountie(countrie: item,)))));
     }
     return countries;
+  }
+
+
+    void _getCountries() async{
+     var connectivityResult = await Connectivity().checkConnectivity();
+         if (connectivityResult == ConnectivityResult.none) {   
+           this._haveInternet = false;   
+
+           
+
+      return;
+      }
+       _countries = _api.getCountries();
+       _body = FutureBuilder(
+        future: _countries,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            print(snapshot.data);
+            return GridView.count(
+              crossAxisCount: 2,
+              children: _listCountries(snapshot.data),
+            );
+          } else if (snapshot.hasError) {
+            print(snapshot.error);
+            return Text("Error");
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      
+        );
   }
 }

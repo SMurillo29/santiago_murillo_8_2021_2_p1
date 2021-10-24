@@ -1,3 +1,6 @@
+import 'currency.dart';
+import 'flag.dart';
+
 class Countrie {
   late String name;
   //late List<String> topLevelDomain;
@@ -19,6 +22,9 @@ class Countrie {
   late String flag;  
   //late String cioc;
   late bool independent;
+  late Flags flags;
+  //late List<Currencie> currencies;
+
 
   Countrie(
       String name,
@@ -40,7 +46,10 @@ class Countrie {
       String numericCode,
       String flag,
       //String cioc,
-      bool independent) {
+      bool independent,
+      Flags flags,
+      //List<Currencie> currencies
+      ) {
     this.name = name;
     //this.topLevelDomain = topLevelDomain;
     this.alpha2Code = alpha2Code;
@@ -61,5 +70,7 @@ class Countrie {
     this.flag = flag;   
     //this.cioc = cioc;
     this.independent = independent;
+    this.flags = flags;
+    //this.currencies = currencies;
   }
 }

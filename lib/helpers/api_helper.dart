@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:santiago_murillo_8_2021_2_p1/models/countrie.dart';
+import '../models/flag.dart';
 
 class ApiHelter {
   Future<List<Countrie>> getCountries() async {
     List<Countrie> countries = [];
-    var url = Uri.parse('https://restcountries.com/v2/name/colombia');
+    var url = Uri.parse('https://restcountries.com/v2/all');
     var response = await http.get(url);
     if (response.statusCode == 200) {      
       String body = utf8.decode(response.bodyBytes);
@@ -25,7 +26,10 @@ class ApiHelter {
             item["nativeName"],
             item["numericCode"],
             item["flag"],            
-            item["independent"]));
+            item["independent"],
+            Flags.fromJson(item['flags'])
+            
+            ));
       }
     } else {
       throw Exception("Falló la petición");
