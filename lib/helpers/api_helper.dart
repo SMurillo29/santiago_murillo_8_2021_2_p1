@@ -6,7 +6,7 @@ import 'package:santiago_murillo_8_2021_2_p1/models/countrie.dart';
 class ApiHelter {
   Future<List<Countrie>> getCountries() async {
     List<Countrie> countries = [];
-    var url = Uri.parse('https://restcountries.com/v2/all');
+    var url = Uri.parse('https://restcountries.com/v2/name/colombia');
     var response = await http.get(url);
     if (response.statusCode == 200) {      
       String body = utf8.decode(response.bodyBytes);

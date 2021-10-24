@@ -1,17 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:santiago_murillo_8_2021_2_p1/models/countrie.dart';
+import 'package:santiago_murillo_8_2021_2_p1/screen/detail.dart';
 import './helpers/api_helper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MyApp2());
 
-class MyApp extends StatefulWidget {
+class MyApp2 extends StatelessWidget {
+  const MyApp2({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Counries",
+      home: Inicio()
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  ApiHelter _api = new ApiHelter();
+class Inicio extends StatefulWidget {
+  Inicio({Key? key}) : super(key: key);
+
+  @override
+  _InicioState createState() => _InicioState();
+}
+
+class _InicioState extends State<Inicio> {
+    ApiHelter _api = new ApiHelter();
   late Future<List<Countrie>> _countries;
 
   @override
@@ -22,9 +37,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text('Countries'),
         ),
@@ -46,14 +59,13 @@ class _MyAppState extends State<MyApp> {
             );
           },
         ),
-      ),
     );
   }
 
-  List<Widget> _listCountries(data) {
+    List<Widget> _listCountries(data) {
     List<Widget> countries = [];
     for (var item in data) {
-      countries.add(Card(
+      countries.add(InkWell(  child: Card(
           child: Column(
         children: [          
           Expanded(child: SvgPicture.network(item.flag)),      
@@ -63,7 +75,10 @@ class _MyAppState extends State<MyApp> {
             child: Text(item.name),
           )
         ],
-      )));
+      ),color: Color.fromRGBO(237, 237, 237,25),), onTap: () => Navigator.push(
+        context, 
+        MaterialPageRoute(builder: ( context ) => DetailCountie())
+        )));
     }
     return countries;
   }
