@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:santiago_murillo_8_2021_2_p1/models/countrie.dart';
 import './helpers/api_helper.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,7 +33,8 @@ class _MyAppState extends State<MyApp> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               print(snapshot.data);
-              return ListView(
+              return GridView.count(
+                crossAxisCount: 2,
                 children: _listCountries(snapshot.data),
               );
             } else if (snapshot.hasError) {
@@ -53,8 +55,9 @@ class _MyAppState extends State<MyApp> {
     for (var item in data) {
       countries.add(Card(
           child: Column(
-        children: [
-          //Image.network(item.flag),
+        children: [          
+          Expanded(child: SvgPicture.network(item.flag)),      
+             
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(item.name),
